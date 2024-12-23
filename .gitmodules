@@ -1,0 +1,9 @@
+[submodule "ModifedGCCForSIMDMerge"]
+	path = ModifedGCCForSIMDMerge
+	url = https://github.com/AcrossForest/ModifedGCCForSIMDMerge
+[submodule "ModifiedGem5ForSIMDMerge"]
+	path = ModifiedGem5ForSIMDMerge
+	url = https://github.com/AcrossForest/ModifiedGem5ForSIMDMerge
+[submodule "BenchmarksForSIMDMerge"]
+	path = BenchmarksForSIMDMerge
+	url = https://github.com/AcrossForest/BenchmarksForSIMDMerge
