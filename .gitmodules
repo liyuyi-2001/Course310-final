@@ -7,3 +7,6 @@
 [submodule "BenchmarksForSIMDMerge"]
 	path = BenchmarksForSIMDMerge
 	url = https://github.com/AcrossForest/BenchmarksForSIMDMerge
+[submodule "SIMDMergeDockerfile"]
+	path = SIMDMergeDockerfile
+	url = https://github.com/AcrossForest/SIMDMergeDockerfile
