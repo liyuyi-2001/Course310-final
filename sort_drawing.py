@@ -1,61 +1,73 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Data
+# 数据
 bar_one = {
-    "std::stable_sort (kv)": 10000 / 9.66e+05,
-    "std::sort (kv)": 10000 / 8.51e+05,
+    "std::stable_sort": 10000 / 9.66e+05,
+    "std::sort": 10000 / 8.51e+05,
 }
 
 simd_four = {
-    "Proposed SIMD (kv)": 10000 / 5.27e+05,
-    "Bramas SIMD (kv)": 10000 / 1.19e+06,
+    "Proposed SIMD (4)": 10000 / 5.27e+05,
+    "Bramas SIMD (4)": 10000 / 1.19e+06,
 }
 
 simd_sixteen = {
-    "Proposed SIMD (kv)": 10000 / 1.26e+05,
-    "Bramas SIMD (kv)": 10000 / 4.76e+05,
+    "Proposed SIMD (16)": 10000 / 1.26e+05,
+    "Bramas SIMD (16)": 10000 / 4.76e+05,
 }
 
-# Normalize data to have the same length
-categories = ['Scalar', 'SIMD 4', 'SIMD 16']
+# 计算吞吐量
+labels = [
+    "std::stable_sort", 
+    "std::sort", 
+    "Proposed SIMD (4)", 
+    "Bramas SIMD (4)", 
+    "Proposed SIMD (16)", 
+    "Bramas SIMD (16)"
+]
 
-# Values for each category
-bar_one_values = [bar_one["std::stable_sort (kv)"], bar_one["std::sort (kv)"]]
-simd_four_values = [simd_four["Proposed SIMD (kv)"], simd_four["Bramas SIMD (kv)"]]
-simd_sixteen_values = [simd_sixteen["Proposed SIMD (kv)"], simd_sixteen["Bramas SIMD (kv)"]]
+values = [
+    bar_one["std::stable_sort"],
+    bar_one["std::sort"],
+    simd_four["Proposed SIMD (4)"],
+    simd_four["Bramas SIMD (4)"],
+    simd_sixteen["Proposed SIMD (16)"],
+    simd_sixteen["Bramas SIMD (16)"]
+]
 
-# Combine values into a single list, ensuring alignment
-values = np.array([
-    [bar_one_values[0], 0, 0],  # std::stable_sort
-    [bar_one_values[1], 0, 0],  # std::sort
-    [0, simd_four_values[0], 0],  # Proposed SIMD (SIMD 4)
-    [0, simd_four_values[1], 0],  # Bramas SIMD (SIMD 4)
-    [0, 0, simd_sixteen_values[0]],  # Proposed SIMD (SIMD 16)
-    [0, 0, simd_sixteen_values[1]]   # Bramas SIMD (SIMD 16)
-])
+x = np.arange(len(labels))  # 标签位置
+width = 0.5  # 柱状图宽度
 
-# Plotting
-fig, ax = plt.subplots()
+# 定义稍深的莫兰蒂色系
+colors = ['#b08ea2', '#8f7d7d', '#a1b0a1', '#c49ca8', '#8a9db0', '#a0a0a0']
 
-# Stacked bars
-ax.bar(categories, values[0], label='std::stable_sort', color='#1f77b4')
-ax.bar(categories, values[1], bottom=values[0], label='std::sort', color='#aec7e8')
-ax.bar(categories, values[2], bottom=values[0] + values[1], label='Proposed SIMD (SIMD 4)', color='#ff7f0e')
-ax.bar(categories, values[3], bottom=values[0] + values[1] + values[2], label='Bramas SIMD (SIMD 4)', color='#ffbb78')
-ax.bar(categories, values[4], bottom=values[0] + values[1] + values[2] + values[3], label='Proposed SIMD (SIMD 16)', color='#2ca02c')
-ax.bar(categories, values[5], bottom=values[0] + values[1] + values[2] + values[3] + values[4], label='Bramas SIMD (SIMD 16)', color='#98df8a')
+# 绘制柱状图
+fig, ax = plt.subplots(figsize=(12, 6))
+rects = ax.bar(x, values, width, color=colors, edgecolor='black')
 
-# Add labels, title, and legend
-ax.set_xlabel('Implementation')
-ax.set_ylabel('Throughput (tuples/ns)')
-ax.set_title('Throughput by Implementation and Algorithm')
-ax.set_xticks(np.arange(len(categories)))
-ax.set_xticklabels(categories)
-ax.legend()
+# 添加标签和标题
+ax.set_ylabel('Throughput (tuples/ns)', fontsize=12)
+ax.set_title('Throughput by Implementation and Algorithm', fontsize=14)
+ax.set_xticks(x)
+ax.set_xticklabels(labels, rotation=45, ha='right', fontsize=10)
 
-# Enhance layout
-plt.grid(axis='y', linestyle='--', alpha=0.7)
+# 添加图例
+ax.legend(labels)
+
+# 自动添加数据标签
+def autolabel(rects):
+    for rect in rects:
+        height = rect.get_height()
+        ax.annotate(f'{height:.2f}',
+                    xy=(rect.get_x() + rect.get_width() / 2, height),
+                    xytext=(0, 5),  # 5 points vertical offset
+                    textcoords="offset points",
+                    ha='center', va='bottom',
+                    fontsize=10, color='black')
+
+autolabel(rects)
+
 plt.tight_layout()
 plt.show()
 
